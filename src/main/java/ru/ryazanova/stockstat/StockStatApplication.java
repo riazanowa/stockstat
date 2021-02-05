@@ -20,6 +20,5 @@ public class StockStatApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("StockStat app is working ...");
 
-        new CompanyService().findAll().forEach(x -> System.out.println(x));
     }
 }

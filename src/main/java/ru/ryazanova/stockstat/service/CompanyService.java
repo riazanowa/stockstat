@@ -1,7 +1,7 @@
 package ru.ryazanova.stockstat.service;
 
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.ryazanova.stockstat.model.Company;
 import ru.ryazanova.stockstat.dto.CompanyDTO;
@@ -11,11 +11,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CompanyService {
-    @Autowired
-    private IEXCloudClient iexCloudClient;
-    @Autowired
-    private CompanyRepository repository;
+
+    private final IEXCloudClient iexCloudClient;
+
+    private final CompanyRepository repository;
 
     public List<Company> findAll() {
         return iexCloudClient.getCompaniesDTO().stream()
@@ -24,7 +25,8 @@ public class CompanyService {
     }
 
     private Company convertToCompany(@NonNull CompanyDTO companyDTO) {
-        return new Company(companyDTO.getSymbol(),
+        return new Company(
+                companyDTO.getSymbol(),
                 companyDTO.getName(),
                 companyDTO.getDate(),
                 companyDTO.getType(),

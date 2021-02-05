@@ -1,8 +1,9 @@
 package ru.ryazanova.stockstat.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,23 +14,41 @@ import java.util.Date;
 @Entity
 @Data
 @Table( name = "company")
+@NoArgsConstructor
 public class Company {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "symbol")
     private String symbol;
-    private String name;
-    private Date date;
-    private String type;
-    private String iexId;
-    private String region;
-    private String currency;
-    private boolean isEnabled;
-    private String figi;
-    private String cik;
 
-    protected Company() {}
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "date")
+    private Date date;
+
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "iexId")
+    private String iexId;
+
+    @Column(name = "region")
+    private String region;
+
+    @Column(name = "currency")
+    private String currency;
+
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
+
+    @Column(name = "figi")
+    private String figi;
+
+    @Column(name = "cik")
+    private String cik;
 
     public Company(String symbol, String name, Date date, String type,
                    String iexId, String region, String currency,
