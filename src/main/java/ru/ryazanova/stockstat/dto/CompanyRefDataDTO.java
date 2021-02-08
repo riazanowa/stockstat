@@ -1,11 +1,13 @@
 package ru.ryazanova.stockstat.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class CompanyDTO {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CompanyRefDataDTO {
     private String symbol;
     private String name;
     private Date date;
