@@ -7,6 +7,7 @@ CREATE TABLE stock_quote_company
     company_name  VARCHAR(250) NOT NULL,
     primary_exchange  VARCHAR(250),
     latest_price DECIMAL NOT NULL,
+    realtime_price DECIMAL NOT NULL,
     previous_volume BIGINT NOT NULL,
     volume BIGINT,
     last_trade_time BIGINT

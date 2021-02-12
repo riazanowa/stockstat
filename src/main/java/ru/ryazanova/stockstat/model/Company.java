@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Entity
 @Data
@@ -28,6 +27,9 @@ public class Company {
 
     @Column(name = "company_name")
     private String companyName;
+
+    @Column(name = "realtime_price")
+    private BigDecimal iexRealtimePrice;
 
     @Column(name = "primary_exchange")
     private String primaryExchange;

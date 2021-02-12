@@ -8,6 +8,8 @@ import ru.ryazanova.stockstat.dto.RefDataDTO;
 import ru.ryazanova.stockstat.dto.CompanyRefDataDTO;
 import ru.ryazanova.stockstat.dto.StockCompanyDTO;
 import ru.ryazanova.stockstat.model.Company;
+import ru.ryazanova.stockstat.model.Request;
+import ru.ryazanova.stockstat.repository.CompanyRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -18,8 +20,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 @Component
 @RequiredArgsConstructor
 public class IEXCloudClient {
-
-    private ArrayBlockingQueue<String> requests = new ArrayBlockingQueue<>(50);
 
     @Value("${iexapis.url.ref-data}")
     private final String REF_DATA_URL;
@@ -33,6 +33,8 @@ public class IEXCloudClient {
 
     private final StockCompanyConverter converter;
 
+    private final CompanyRepository repository;
+
 
     public List<CompanyRefDataDTO> getCompanyRefDataDTOs() {
         try {
@@ -43,33 +45,29 @@ public class IEXCloudClient {
         }
     }
 
-    public void createRequestForEachTradingCompany() {
+    public ArrayBlockingQueue<Request> createRequestsForEachTradingCompany() {
+        ArrayBlockingQueue<Request> requests = new ArrayBlockingQueue<>(50);
+
         List<CompanyRefDataDTO> companyRefDataDTOS = getCompanyRefDataDTOs();
+
         for (CompanyRefDataDTO company: companyRefDataDTOS) {
             String uri = String.format(STOCK_QUOTE_URI, company.getSymbol(), iexapisToken);
             try {
-                requests.put(uri);
+                requests.put(new Request(uri));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        return requests;
     }
 
-
-    //Очень плохая  недоделанная версия метода
-    public Company getStockQuoteInfoAboutEachCompany() {
-            String URI;
-            try {
-                URI = requests.take();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            StockCompanyDTO response = restTemplate.getForObject(URI, StockCompanyDTO.class );
+    public void getStockQuoteInfoAboutCompanyAndSaveIntoDB(Request request) {
+            StockCompanyDTO response = restTemplate.getForObject(request.getURI(), StockCompanyDTO.class );
         try {
-           return converter.convertToEntity(response);
+            repository.save(converter.convertToEntity(response));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return null;
+
     }
 }
