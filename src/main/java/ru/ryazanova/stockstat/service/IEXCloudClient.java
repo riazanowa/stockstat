@@ -14,6 +14,7 @@ import ru.ryazanova.stockstat.repository.CompanyRepository;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -31,10 +32,6 @@ public class IEXCloudClient {
 
     private final RestTemplate restTemplate;
 
-    private final StockCompanyConverter converter;
-
-    private final CompanyRepository repository;
-
 
     public List<CompanyRefDataDTO> getCompanyRefDataDTOs() {
         try {
@@ -45,29 +42,22 @@ public class IEXCloudClient {
         }
     }
 
-    public ArrayBlockingQueue<Request> createRequestsForEachTradingCompany() {
-        ArrayBlockingQueue<Request> requests = new ArrayBlockingQueue<>(50);
+    public List<Request> createListOfRequestsForEachTradingCompany() {
+        List<Request> requests = new ArrayList<>();
 
         List<CompanyRefDataDTO> companyRefDataDTOS = getCompanyRefDataDTOs();
 
         for (CompanyRefDataDTO company: companyRefDataDTOS) {
             String uri = String.format(STOCK_QUOTE_URI, company.getSymbol(), iexapisToken);
-            try {
-                requests.put(new Request(uri));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            requests.add(new Request(uri));
         }
         return requests;
     }
 
-    public void getStockQuoteInfoAboutCompanyAndSaveIntoDB(Request request) {
+    public StockCompanyDTO getStockQuoteInfoAboutCompany(Request request) {
             StockCompanyDTO response = restTemplate.getForObject(request.getURI(), StockCompanyDTO.class );
-        try {
-            repository.save(converter.convertToEntity(response));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+            return response;
     }
+
+
 }

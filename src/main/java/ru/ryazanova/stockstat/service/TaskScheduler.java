@@ -1,7 +1,6 @@
 package ru.ryazanova.stockstat.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.ryazanova.stockstat.model.Company;
@@ -10,12 +9,11 @@ import ru.ryazanova.stockstat.model.Request;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class TaskScheduler implements Runnable {
+public class TaskScheduler{
 
     private final ArrayBlockingQueue<Request> requests = new ArrayBlockingQueue<>(50);
 
@@ -41,19 +39,6 @@ public class TaskScheduler implements Runnable {
 
         for (int i = 0; i < 5; i++) {
             System.out.println(recentCompanies.get(i));
-        }
-
-    }
-
-    @Override
-    public void run() {
-        Request request = null;
-
-        try {
-            request = requests.take();
-            iexCloudClient.getStockQuoteInfoAboutCompanyAndSaveIntoDB(request);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
     }

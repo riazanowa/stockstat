@@ -12,13 +12,6 @@ import java.util.concurrent.ExecutorService;
 @AllArgsConstructor
 public class StockStatApplication implements CommandLineRunner {
 
-    @Qualifier("fixedThreadPool")
-    private final ExecutorService executorService;
-
-    public void executeWithResult(Runnable runnable) {
-        executorService.submit(runnable);
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(StockStatApplication.class, args);
 
