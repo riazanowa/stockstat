@@ -32,7 +32,7 @@ public class StockCompanyService implements Runnable  {
 
     private final CompanyRepository repository;
 
-    ArrayBlockingQueue<Request> requests = createQueueOfRequestsForEachCompany();
+    private ArrayBlockingQueue<Request> requests = createQueueOfRequestsForEachCompany();
 
     public List<Company> getAllCompanies() {
        List<Company> companies = repository.findAll().stream()
