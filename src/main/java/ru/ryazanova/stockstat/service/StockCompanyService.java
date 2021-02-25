@@ -21,18 +21,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StockCompanyService implements Runnable  {
+public class StockCompanyService {
 
     @Qualifier("fixedThreadPool")
     private final ExecutorService executorService;
 
-    private final IEXCloudClient iexCloudClient;
-
-    private final StockCompanyConverter converter;
-
     private final CompanyRepository repository;
-
-    private ArrayBlockingQueue<Request> requests = createQueueOfRequestsForEachCompany();
 
     public List<Company> getAllCompanies() {
        List<Company> companies = repository.findAll().stream()
@@ -41,34 +35,11 @@ public class StockCompanyService implements Runnable  {
        return companies;
     }
 
-    public void updateInfoAboutEachCompanyInDB(Company company) {
-            repository.save(company);
-    }
-
-    public ArrayBlockingQueue<Request> createQueueOfRequestsForEachCompany() {
-        List<Request> requests = iexCloudClient.createListOfRequestsForEachTradingCompany();
-        return new ArrayBlockingQueue<>(requests.size(), true, requests);
-    }
-
-    @Override
-    public void run() {
-        Request request;
-        try {
-            request = requests.take();
-            StockCompanyDTO response = iexCloudClient.getStockQuoteInfoAboutCompany(request);
-            updateInfoAboutEachCompanyInDB(converter.convertToEntity(response));
-
-        } catch (InterruptedException e) {
-            System.out.println("Exception with blocking queue");
-        } catch (ParseException e) {
-            System.out.println("Parse Exception of companyDTO into company");
-        }
-    }
-
-
-    //Кажется, бред
     public void executeWithResult() {
-        executorService.submit(this::run);
+        while (true) {
+            executorService.execute(new StockCompanyTask());
+        }
+
     }
 
 

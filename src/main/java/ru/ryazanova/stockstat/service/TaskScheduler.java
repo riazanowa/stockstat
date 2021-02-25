@@ -15,10 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskScheduler{
 
-    private final ArrayBlockingQueue<Request> requests = new ArrayBlockingQueue<>(50);
-
-    private final IEXCloudClient iexCloudClient;
-
     private final StockCompanyService stockCompanyService;
 
 
