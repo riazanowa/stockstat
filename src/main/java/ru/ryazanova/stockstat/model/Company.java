@@ -1,5 +1,6 @@
 package ru.ryazanova.stockstat.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,12 +10,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
+import java.math.BigDecimal;
 
 @Entity
 @Data
-@Table( name = "company")
+@Table( name = "stock_quote_company")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Company {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -23,45 +25,25 @@ public class Company {
     @Column(name = "symbol")
     private String symbol;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "company_name")
+    private String companyName;
 
-    @Column(name = "date")
-    private Date date;
+    @Column(name = "realtime_price")
+    private BigDecimal iexRealtimePrice;
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = "primary_exchange")
+    private String primaryExchange;
 
-    @Column(name = "iexId")
-    private String iexId;
+    @Column(name = "latest_price")
+    private BigDecimal latestPrice;
 
-    @Column(name = "region")
-    private String region;
+    @Column(name = "previous_volume")
+    private Long previousVolume;
 
-    @Column(name = "currency")
-    private String currency;
+    @Column(name = "volume")
+    private Long volume;
 
-    @Column(name = "is_enabled")
-    private boolean isEnabled;
+    @Column(name = "last_trade_time")
+    private Long lastTradeTime;
 
-    @Column(name = "figi")
-    private String figi;
-
-    @Column(name = "cik")
-    private String cik;
-
-    public Company(String symbol, String name, Date date, String type,
-                   String iexId, String region, String currency,
-                   boolean isEnabled, String figi, String cik) {
-        this.symbol = symbol;
-        this.name = name;
-        this.date = date;
-        this.type = type;
-        this.iexId = iexId;
-        this.region = region;
-        this.currency = currency;
-        this.isEnabled = isEnabled;
-        this.figi = figi;
-        this.cik = cik;
-    }
 }
